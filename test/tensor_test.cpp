@@ -15,7 +15,11 @@ int main(void)
 	TEST(tensor<int> t4(std::move(t1)))
 	TEST(tensor<int> t5 = t4)
 	TEST(tensor<int> t6 = std::move(t2))
+
 	TEST(t2 = t3 = t4)
+
+	TEST(t2 == t3);
+	TEST(t2 != t5);
 	
 	TEST(t3 += 1)
 	TEST(t3 -= 1)
@@ -31,6 +35,11 @@ int main(void)
 	TEST(t3 = 1 - t4)
 	TEST(t3 = 1 * t4)
 	TEST(t3 = 1 / t4)
+
+	TEST(t3 += t4);
+	TEST(t3 -= t4);
+	TEST(t3 *= t4);
+	TEST(t3 /= t4);
 
 	return 0;
 }

@@ -112,25 +112,48 @@ class tensor
 #ifdef TENSOR_TEST
 		PRINT(TEST_COPY_ASSIGNMENT);
 #endif
+		std::unique_ptr<size_t[]> temp_shape;
+
 		if(this->rang != other.rang)
 		{
-			this->rang = other.rang;
-			std::unique_ptr<size_t[]> temp_ptr = std::make_unique<size_t[]>(this->rang);
-			this->shape = std::move(temp_ptr);
+			try
+			{
+				temp_shape = std::make_unique<size_t[]>(other.rang);
+				this->rang = other.rang;
+			
+				for(size_t i = 0; i < this->rang; i++)
+				{
+					temp_shape[i] = other.shape[i];
+				}
+
+				this->shape = std::move(temp_shape);
+			}
+			catch(const std::exception&)
+			{
+				throw;
+			}
 		}
+
+		std::unique_ptr<T[]> temp_data;
+
 		if(this->size != other.size)
 		{
-			this->size = other.size;
-			std::unique_ptr<T[]> temp_ptr = std::make_unique<T[]>(this->size);
-			this->data = std::move(temp_ptr);
-		}
-		for(size_t i = 0; i < this->rang; i++)
-		{
-			this->shape[i] = other.shape[i];
-		}
-		for(size_t i = 0; i < this->size; i++)
-		{
-			this->data[i] = other.data[i];
+			try
+			{
+				temp_data = std::make_unique<T[]>(other.size);
+				this->size = other.size;
+
+				for(size_t i = 0; i < this->size; i++)
+				{
+					temp_data[i] = other.data[i];
+				}
+
+				this->data = std::move(temp_data);
+			}
+			catch(const std::exception&)
+			{
+				throw;
+			}
 		}
 		return *this;
 	}
